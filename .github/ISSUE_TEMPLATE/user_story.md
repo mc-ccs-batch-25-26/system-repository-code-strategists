@@ -4,7 +4,7 @@
 
 ## User Story
 
-**As an** Adn
+**As a** [specific user, stakeholder, reviewer, or team role]
 
 **I want** [specific action, capability, or documentation outcome]
 
