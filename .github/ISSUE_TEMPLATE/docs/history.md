@@ -40,7 +40,7 @@ View Booking History
 UI testing
 
 **Related repository evidence**
-docs/history.md
+.github/ISSUE_TEMPLATE/docs/history.md
 
 ---
 

@@ -43,7 +43,7 @@ UI & data validation
 
 **Related repository evidence**
 
-docs/dashboard.md
+.github/ISSUE_TEMPLATE/docs/dashboard.md
 ---
 
 
