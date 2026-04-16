@@ -1,0 +1,20 @@
+site_name: Project Documentation
+repo_url: https://github.com/your-org/your-repo
+site_description: System Repository Documentation
+
+theme:
+  name: material
+
+plugins:
+  - search
+
+markdown_extensions:
+  - toc
+  - tables
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Implementation: implementation.md
