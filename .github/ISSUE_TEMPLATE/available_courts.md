@@ -29,7 +29,7 @@ Book Available Courts
 
 **Given** a court is available,
 
-**when**  the user books it,
+**when** the user books it,
 
 **then** the reservation is confirmed
 

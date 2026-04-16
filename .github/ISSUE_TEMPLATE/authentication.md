@@ -4,7 +4,7 @@ Admin Authentication Access
 
 ## User Story
 
-**As a** admin
+**As an** admin
 
 **I want** to securely log in and register
 
