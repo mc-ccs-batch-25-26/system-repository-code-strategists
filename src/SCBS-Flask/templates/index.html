@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Complex Booking System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">
+        <i></i> Sports Complex
+    </div>
+
+    <div class="nav-center">
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}#home">Home</a>
+            <a href="{{ url_for('index') }}#about">About</a>
+            <a href="{{ url_for('index') }}#facilities">Facilities</a>
+            <a href="{{ url_for('index') }}#contact">Contact</a>
+        </div>
+    </div>
+
+    <div class="auth-buttons">
+        {% if not user %}
+            <a href="{{ url_for('login') }}" class="btn btn-login">Login</a>
+            <a href="{{ url_for('login') }}?form=signup" class="btn btn-signup">Sign Up</a>
+        {% else %}
+            <div class="profile-dropdown">
+                <div class="profile-btn">
+                    {% if user.profile_image %}
+                        <img src="{{ user.profile_image }}" alt="Profile">
+                    {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ user.name }}&background=329D9C&color=fff&rounded=true">
+                    {% endif %}
+                </div>
+                <div class="dropdown-menu">
+                    <a href="{{ url_for('my_bookings') }}">My Bookings</a>
+                    <a href="{{ url_for('profile') }}">Profile</a>
+                    <a href="{{ url_for('logout') }}" class="logout" id="logoutBtn">Logout</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+
+<!-- HERO -->
+<section id="home" class="hero">
+    <div class="slide active">
+        <img src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d">
+    </div>
+    <div class="slide">
+        <img src="https://images.unsplash.com/photo-1517649763962-0c623066013b">
+    </div>
+    <div class="slide">
+        <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5">
+    </div>
+
+    <div class="hero-content">
+        <div class="hero-title" id="heroTitle"></div>
+        <div class="hero-subtitle" id="heroText"></div>
+        <a href="#facilities" class="hero-btn">Book Now</a>
+    </div>
+
+    <div class="dots" id="dots"></div>
+</section>
+
+
+<!-- ABOUT -->
+<section id="about" class="about-section">
+    <div class="about-container">
+
+        <div class="about-content">
+            <span class="about-badge">About Us</span>
+            <h2>Modern Sports Facility Reservation Experience</h2>
+            <p class="about-description">
+                Our platform is designed to simplify the process of reserving sports facilities by providing a fast,
+                secure, and user-friendly booking experience for athletes, students, organizations, and sports enthusiasts.
+            </p>
+
+            <div class="about-features">
+                <div class="feature-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <div>
+                        <h4>Easy Reservations</h4>
+                        <p>Book facilities anytime with a streamlined scheduling system.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <h4>Real-Time Availability</h4>
+                        <p>Monitor available schedules and active reservations instantly.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <div>
+                        <h4>Secure Transactions</h4>
+                        <p>Reliable reservation and payment management for all users.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <div>
+                        <h4>Responsive Platform</h4>
+                        <p>Accessible across desktop, tablet, and mobile devices.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-image">
+            <img src="{{ url_for('static', filename='images/stadium.jpg') }}"
+                 alt="Sports Complex"
+                 onerror="this.onerror=null; this.src='{{ url_for('static', filename='uploads/facilities/default.png') }}';">
+            <div class="about-overlay">
+                <div class="overlay-card">
+                    <h3>24/7 Booking Access</h3>
+                    <p>Reserve facilities online anytime and anywhere.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+
+<!-- FACILITIES -->
+<section id="facilities" class="facilities-section">
+    <div class="facilities-header">
+        <h2 class="section-title">Facilities List</h2>
+    </div>
+
+    <div class="category-filters">
+        <button class="filter-btn active" data-category="all">All</button>
+        {% for category in categories %}
+        <button class="filter-btn" data-category="{{ category.id }}">{{ category.name }}</button>
+        {% endfor %}
+    </div>
+
+    <div class="facilities-grid">
+        {% if facilities and facilities|length > 0 %}
+            {% for facility in facilities %}
+            <div class="facility-card" data-category="{{ facility.category_id }}">
+
+                <div class="facility-image">
+                    <img src="{{ facility.image_url }}"
+                         alt="{{ facility.name }}"
+                         loading="lazy"
+                         onerror="this.onerror=null; this.src='{{ url_for('static', filename='uploads/facilities/default.png') }}';">
+                    <div class="facility-status">{{ facility.status }}</div>
+                </div>
+
+                <div class="facility-content">
+                    <div class="facility-header">
+                        <div>
+                            <h3>{{ facility.name }}</h3>
+                            <small class="facility-category">Sports Facility</small>
+                        </div>
+                        <span class="price">₱{{ facility.price_per_hour }} <small>/hr</small></span>
+                    </div>
+
+                    <p class="facility-desc">
+                        {{ facility.description if facility.description else 'Modern sports facility available for reservation and recreational activities.' }}
+                    </p>
+
+                    <div class="facility-meta">
+                        <div class="meta-item">
+                            <div>
+                                <span class="label">Capacity</span>
+                                <span class="value">{{ facility.capacity }}</span>
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <div>
+                                <span class="label">Availability</span>
+                                <span class="value">{{ facility.status }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="book-btn"
+                            onclick="openBookingModal(this)"
+                            data-id="{{ facility.id }}"
+                            data-price="{{ facility.price_per_hour }}">
+                        Book
+                    </button>
+                </div>
+
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-building"></i>
+                <h3>No Facilities Available</h3>
+                <p>There are currently no facilities available for reservation.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+
+<!-- BOOKING MODAL -->
+<div id="bookingModal" class="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal-container minimal" onclick="event.stopPropagation()">
+
+        <!-- CLOSE -->
+        <button type="button" class="modal-close-x" onclick="closeBookingModal()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <!-- HEADER -->
+        <h2 class="modal-title">
+            <i class="fas fa-calendar-check" style="color:#14b8a6;margin-right:8px;"></i>
+            Book Schedule
+        </h2>
+
+        <form onsubmit="handleBookingSubmit(event)" novalidate>
+
+            <!-- DATE -->
+            <label>Date <span class="req">*</span></label>
+            <input type="date" id="startDate" required>
+            <div id="dateError" class="field-error"></div>
+
+            <!-- TIME GRID HEADER -->
+            <div class="tg-header">
+                <div>
+                    <label style="margin:0;">Time Slot <span class="req">*</span></label>
+                    <div id="rtBadge" class="rt-badge">
+                        <span class="rt-dot"></span> Live availability
+                    </div>
+                </div>
+                <div class="time-legend">
+                    <span class="leg-item"><span class="leg-dot ld-avail"></span>Available</span>
+                    <span class="leg-item"><span class="leg-dot ld-booked"></span>Booked</span>
+                    <span class="leg-item"><span class="leg-dot ld-sel"></span>Selected</span>
+                    <span class="leg-item"><span class="leg-dot ld-past"></span>Past</span>
+                </div>
+            </div>
+
+            <!-- STEP HINT -->
+            <div id="stepHint" class="step-hint">
+                <i class="fas fa-hand-pointer"></i>
+                <span id="stepHintText">Click a time block to set your <strong>start time</strong></span>
+            </div>
+
+            <!-- GRID WRAP -->
+            <div id="timeGridWrap" class="tg-wrap">
+                <div id="timeGridLoader" class="tg-loader">
+                    <i class="fas fa-spinner fa-spin"></i>&nbsp; Checking availability…
+                </div>
+                <div id="timeGrid" class="time-grid-visual" style="display:none;"></div>
+            </div>
+
+            <!-- BOOKING SUMMARY -->
+            <div id="timeSummary" class="time-summary" style="display:none;">
+                <div class="sum-left">
+                    <span id="sumRange"></span><br>
+                    <small id="sumDuration" style="color:#64748b;font-weight:400;"></small>
+                </div>
+                <div class="sum-right" id="sumCost"></div>
+            </div>
+
+            <!-- PURPOSE -->
+            <label style="margin-top:12px;">
+                Purpose of Booking
+                <span style="font-weight:400;color:#94a3b8;font-size:11px;">(optional)</span>
+            </label>
+            <textarea id="purpose"
+                      placeholder="e.g. Practice game, Training session, Tournament…"
+                      rows="2"
+                      maxlength="300"></textarea>
+
+            <!-- ERRORS -->
+            <div id="bookingError" class="error-box"></div>
+
+            <!-- SUBMIT -->
+            <button class="submit-btn" type="submit" id="bookingSubmitBtn" disabled>
+                <i class="fas fa-arrow-right"></i>&nbsp; Continue to Equipment
+            </button>
+
+        </form>
+    </div>
+</div>
+
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+    <div class="contact-container">
+
+        <div class="contact-info">
+            <span class="contact-badge">Contact Us</span>
+            <h2>Get In Touch With Us</h2>
+            <p>Have questions about facility reservations, schedules, or pricing? Send us a message and our team will respond as soon as possible.</p>
+
+            <div class="contact-cards">
+                <div class="contact-card">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <h4>Location</h4>
+                        <p>Sports Complex Facility Center</p>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-phone-alt"></i>
+                    <div>
+                        <h4>Phone</h4>
+                        <p>+63 946 421 7995</p>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <h4>Email</h4>
+                        <p>sportscomplexx1@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-form-container">
+            <div class="contact-form">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="name" placeholder="Enter your full name">
+                </div>
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email">
+                </div>
+                <div class="input-group">
+                    <label>Message</label>
+                    <textarea id="message" rows="5" placeholder="Write your message here..."></textarea>
+                </div>
+                <button onclick="sendInquiry()" class="contact-btn">Send Message</button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- FOOTER -->
+<div class="footer">
+    © 2026 Sports Complex Booking System
+</div>
+
+
+<!-- FLOATING CHATBOT -
+<button class="chatbot-fab" id="chatbotFab" onclick="toggleChatbot()" title="Chat with us">
+    <i class="fas fa-robot" id="fabIcon"></i>
+</button>
+
+<div class="chatbot-popup" id="chatbotPopup">
+    <div class="chatbot-popup-header">
+        <div class="chatbot-popup-header-left">
+            <div class="chatbot-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div>
+                <div class="chatbot-popup-title">SCBS Assistant</div>
+                <div class="chatbot-popup-subtitle">Online &bull; Ready to help</div>
+            </div>
+        </div>
+        <button class="chatbot-close-btn" onclick="toggleChatbot()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="chatbot-popup-messages" id="popupChatMessages">
+        <div class="bot-msg">
+            Hello 👋 Welcome to Sports Complex Booking System. How can I help you today?
+        </div>
+    </div>
+
+    <div class="chatbot-popup-input">
+        <input type="text" id="popupChatInput" placeholder="Type your message...">
+        <button onclick="sendPopupMessage()">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+
+-->
+
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
